@@ -84,13 +84,12 @@ void loop() {
 //     }
 //   }
 
-    update(gameState);
+    update();
 
-      
 }
 
 
-void update(int gameState) {
+void update() {
   switch (gameState) {
     case 1: //Play
       display.clear();
