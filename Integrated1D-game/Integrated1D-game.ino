@@ -19,6 +19,8 @@ RotaryEncoder encoder1(A0, A1);
 RotaryEncoder encoder2(A2, A3);
 
 int button = 0;
+int old_pos1 = 0;
+int old_pos2 = 0;
 int pos1 = 0;
 int pos2 = 0;
 
@@ -61,6 +63,26 @@ void loop() {
     pos2 = encoder2.getPosition();
 //    Serial.print(pos1);
 //    Serial.print(pos2);
+
+    if (old_pos1 < pos1 || (old_pos1 == 255 && pos1 == 0)) {
+      playerOne.move(1);
+    } else if (old_pos1 > pos1 || (old_pos1 == 0 && pos1 == 255)) {
+      playerOne.move(-1);
+    }
+    old_pos1 = pos1;
+   
+   if (old_pos2 < pos2 || (old_pos2 == 255 && pos2 == 0)) {
+      playerTwo.move(1);
+    } else if (old_pos2 > pos2 || (old_pos2 == 0 && pos2 == 255)) {
+      playerTwo.move(-1);
+    }
+    old_pos2 = pos2;
+   
+//   if(_button == 255) {
+//     if (gameState != 1) {
+//       gameState = 1;                      // if button has been pressed, go back to PLAY state. (only works in SCORE state)
+//     }
+//   }
 
     update(gameState);
 
