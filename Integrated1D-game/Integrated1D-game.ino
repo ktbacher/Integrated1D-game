@@ -24,15 +24,21 @@ int old_pos2 = 0;
 int pos1 = 0;
 int pos2 = 0;
 
+uint32_t magenta = 16711935;
+//    uint32_t cyan = 3325695;
+uint32_t cyan = 38655;
+uint32_t white = 16777215;
+uint32_t yellow = 16775680;
+    
 //int inByte = 0;         // incoming serial byte
 
 static int displaySize = 24;
 DisplayBuffer display = DisplayBuffer(displaySize);
-Player playerOne =  Player(int(displaySize/4), displaySize, 255,0,0 );             // Adding 2 players to the game
-Player playerTwo =  Player(int(3*displaySize/4), displaySize, 0,0,255 );
-Target target1[5] = { Target(int(displaySize/4), 255,0,250),Target(0, 0,0,0), Target(0, 0,0,0),Target(0, 0,0,0),Target(0, 0,0,0)  };              // and one target for players to catch.
+Player playerOne =  Player(int(displaySize/4), displaySize, magenta );             // Adding 2 players to the game
+Player playerTwo =  Player(int(3*displaySize/4), displaySize, cyan );
+Target target1[5] = { Target(int(displaySize/4), magenta),Target(0, 0), Target(0, 0),Target(0, 0),Target(0, 0)  };              // and one target for players to catch.
 int size1 = 1;
-Target target2[5] = { Target(int(3*displaySize/4), 0,255,255), Target(0, 0,0,0),Target(0, 0,0,0),Target(0, 0,0,0),Target(0, 0,0,0), };
+Target target2[5] = { Target(int(3*displaySize/4), cyan), Target(0, 0),Target(0,0),Target(0, 0),Target(0,0), };
 int size2 = 1;
 
 //Score score = new Score(color(0,0,0));   // Used to display winner's color  
@@ -51,6 +57,7 @@ void setup() {
   pixels.begin();
   pixels.setBrightness(255);                // Set LED brightness 0-255
   LEDsOff();
+  printDisplay(display.displayBuffer);
 }
 
 
@@ -64,16 +71,26 @@ void loop() {
 //    Serial.print(pos1);
 //    Serial.print(pos2);
 
-    if (old_pos1 < pos1 || (old_pos1 == 255 && pos1 == 0)) {
+//    if (old_pos1 < pos1 || (old_pos1 == 255 && pos1 == 0)) {
+//      playerOne.move(1);
+//    } else if (old_pos1 > pos1 || (old_pos1 == 0 && pos1 == 255)) {
+//      playerOne.move(-1);
+//    }
+    if (old_pos1 < pos1) {
       playerOne.move(1);
-    } else if (old_pos1 > pos1 || (old_pos1 == 0 && pos1 == 255)) {
+    } else if (old_pos1 > pos1) {
       playerOne.move(-1);
     }
     old_pos1 = pos1;
    
-   if (old_pos2 < pos2 || (old_pos2 == 255 && pos2 == 0)) {
+//   if (old_pos2 < pos2 || (old_pos2 == 255 && pos2 == 0)) {
+//      playerTwo.move(1);
+//    } else if (old_pos2 > pos2 || (old_pos2 == 0 && pos2 == 255)) {
+//      playerTwo.move(-1);
+//    }
+    if (old_pos2 < pos2) {
       playerTwo.move(1);
-    } else if (old_pos2 > pos2 || (old_pos2 == 0 && pos2 == 255)) {
+    } else if (old_pos2 > pos2) {
       playerTwo.move(-1);
     }
     old_pos2 = pos2;
@@ -90,16 +107,16 @@ void loop() {
 
 
 void update() {
+  printDisplay(display.displayBuffer);
   switch (gameState) {
     case 1: //Play
       display.clear();
-
       //set nuetral zone... change to yellow?
-      display.setPixel(0, uint32_t(255,255,255));
-      display.setPixel(displaySize-1, uint32_t(255,255,255));
-      display.setPixel(int((displaySize-1)/2), uint32_t(255,255,255));
-      display.setPixel(int((displaySize+1)/2), uint32_t(255,255,255));
-
+      display.setPixel(0, yellow);
+      display.setPixel(displaySize-1, yellow);
+      display.setPixel(int((displaySize-1)/2),yellow);
+      display.setPixel(int((displaySize+1)/2), yellow);
+      
       // now add the targets
       for (int i=0; i<size1; i++) {
         display.setPixel(target1[i].position, target1[i].targetColor);
@@ -107,7 +124,7 @@ void update() {
         if (playerTwo.position == target1[i].position)  {
           playerTwo.score++;
           int offset = (2*(size2%2)-1)*int((size2+1)/2);
-          target2[size2] = Target(int(3*displaySize/4)+offset, 0,255,255);
+          target2[size2] = Target(int(3*displaySize/4)+offset, cyan);
           size2 ++;
           gameState = 3;
         }
@@ -118,7 +135,7 @@ void update() {
         if (playerOne.position == target2[i].position)  {
           playerOne.score++;
           int offset = (2*(size1%2)-1)*int((size1+1)/2);
-          target1[size1] = Target(int(displaySize/4)+offset, 255,0,250);
+          target1[size1] = Target(int(displaySize/4)+offset, magenta);
           gameState = 3;
         }
       }
@@ -194,16 +211,28 @@ void update() {
 
 
 void show() { 
-  for(int i = 0; i < displaySize; i++) {
+//  Serial.println("~~~~showing");
+  for(int i = 0; i < pixels.numPixels(); i++) {
     pixels.setPixelColor(i, display.displayBuffer[i]);
-    
+//    Serial.print(String(display.displayBuffer[i]) + " ");
   }
+//  Serial.println();
   pixels.show();
 }
 
 void LEDsOff() {
   for(int i=0; i<pixels.numPixels(); i++) {
-      pixels.setPixelColor(i, 0,0,0);
+      pixels.setPixelColor(i, 0);
       pixels.show();
   }
+//  delay(10000);
+}
+
+void printDisplay(uint32_t buffer[]) {
+  Serial.println("displaying buffer: ");
+  for (int i=0; i<pixels.numPixels(); i++) {
+    Serial.print(buffer[i]);
+    Serial.print(" ");
+  }
+  Serial.println();
 }

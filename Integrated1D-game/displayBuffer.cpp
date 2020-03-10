@@ -5,13 +5,19 @@ DisplayBuffer::DisplayBuffer(int dispSize)
 {
   displaySize = dispSize;
   uint32_t displayBuffer[dispSize];
-  uint32_t initColor = uint32_t(0, 0, 0); 
+  uint32_t initColor = uint32_t(0); 
+  for(int i = 0; i < displaySize; i++) { 
+//    Serial.print(i);   
+    displayBuffer[i] = initColor; 
+  }
 }
 
 void DisplayBuffer::clear() {
-
-  for(int i = 0; i < displaySize; i++) {    
+//  Serial.print(displaySize);
+  for(int i = 0; i < displaySize; i++) { 
+//    Serial.print(i);   
     displayBuffer[i] = initColor; 
+//    Serial.println(displayBuffer[i]);
   }
 }
 

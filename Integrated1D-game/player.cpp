@@ -1,12 +1,12 @@
 #include "Arduino.h"
 #include "Player.h"
 
-Player::Player(int pos, uint8_t dispSize, uint8_t red, uint8_t green, uint8_t blue)
+Player::Player(int pos, uint8_t dispSize, uint32_t color)
 {
   position = pos;
   score = 0;
   displaySize = dispSize;
-  playerColor = uint32_t(red, green,blue);
+  playerColor = color;
 }
 
 void Player::move(int dir) {

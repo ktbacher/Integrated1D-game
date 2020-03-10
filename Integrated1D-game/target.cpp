@@ -1,8 +1,8 @@
 #include "Arduino.h"
 #include "Target.h"
 
-Target::Target(int pos, uint8_t red, uint8_t green, uint8_t blue)
+Target::Target(int pos, uint32_t color)
 {
   position = pos;
-  targetColor = uint32_t(red, green, blue);
+  targetColor = color;
 }

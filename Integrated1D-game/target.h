@@ -7,7 +7,7 @@
 class Target
 {
   public:
-    Target(int pos, uint8_t red, uint8_t green, uint8_t blue);
+    Target(int pos, uint32_t color);
     int position;
     uint32_t targetColor;
 };

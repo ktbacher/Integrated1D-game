@@ -11,7 +11,7 @@ class DisplayBuffer
     void clear();
     void setPixel(int  _index, uint32_t _c);
     void setAllPixels(uint32_t _c);
-    uint32_t displayBuffer[];
+    uint32_t displayBuffer[24];
   private:
     int displaySize;
     uint32_t initColor;
